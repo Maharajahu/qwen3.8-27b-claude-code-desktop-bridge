@@ -1,4 +1,4 @@
-# BLACKFURY Ornith 1.5 R Claude Code benchmark audit
+# Ornith 1.5 R Claude Code Desktop benchmark audit
 
 Date: 2026-08-24  
 Claude menu label: `HERMES · Ornith 1.5 R Q6 · 256K`  
@@ -215,8 +215,9 @@ the task. Ornith did not reach the minimum executable baseline in this run.
 ## Conclusion
 
 This benchmark does **not** support the claim that Ornith 1.5 R is the stronger
-Claude Code agent on BLACKFURY. It also does not yet compare Q6 against Q6,
+Claude Code agent on a single RTX 5090. It also does not yet compare Q6 against Q6,
 because the selected Ornith entry resolved to Q4_K_M. Before rerunning Ornith,
 fix the selector-to-runtime mapping, use a new empty folder, and keep the same
 prompt and audit gates. Do not reuse or repair this candidate as benchmark
 input.
+
