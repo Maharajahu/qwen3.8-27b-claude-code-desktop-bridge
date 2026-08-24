@@ -90,7 +90,7 @@ inspect -> plan -> tool calls -> edits -> tests -> self-review -> final answer
 Do not score the run from the final prose. Rerun the tests independently and
 inspect the diff after Claude Code says it is finished.
 
-## Example 2: the BLACKFURY long-agent benchmark
+## Example 2: the Qwen3.8-27B long-agent benchmark
 
 The exact prompt is stored in
 [`benchmarks/CONTROL-CENTER-PROMPT.md`](../benchmarks/CONTROL-CENTER-PROMPT.md).
@@ -110,7 +110,7 @@ task persistence and orchestration. It is also evidence that a confident,
 fully tested final answer is not sufficient proof of correctness.
 
 See the full findings in
-[`docs/BLACKFURY-QWEN-AUDIT.md`](BLACKFURY-QWEN-AUDIT.md).
+[`docs/QWEN3.8-27B-RTX5090-BENCHMARK-AUDIT.md`](QWEN3.8-27B-RTX5090-BENCHMARK-AUDIT.md).
 
 ## Example 3: compare plain model output with harnessed execution
 
@@ -164,3 +164,4 @@ Always report separately:
 
 This prevents a stronger harness from being mistaken for stronger weights, or
 a faster model from being mistaken for a better coding agent.
+
