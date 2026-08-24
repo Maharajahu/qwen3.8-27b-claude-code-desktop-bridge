@@ -116,6 +116,33 @@ Default endpoints:
 - `llama-server`: `http://127.0.0.1:8093/v1`
 - bridge: `http://127.0.0.1:8094`
 
+### Optional: invisible, on-demand Desktop lifecycle
+
+When an ownership-aware model router is listening on `8092`, install the
+background supervisor instead of keeping a terminal open:
+
+```powershell
+Copy-Item .\config\models.example.json .\config\models.json
+.\scripts\install-background-gateway.ps1 -StartNow
+```
+
+This installs a per-user scheduled task through `wscript.exe`, so no terminal
+window appears. The small bridge remains available on localhost, while the GPU
+model lifecycle is delegated to the router:
+
+- the first local inference request loads the requested model;
+- requesting another model drains active work, unloads the old model and loads
+  the new one;
+- closing Claude Code Desktop queues an owner-scoped unload;
+- the router's idle timeout provides a fallback unload if the client remains
+  open or exits without a detectable close event.
+
+The public supervisor expects router control endpoints at
+`http://127.0.0.1:8092/control/select` and `/control/unload`. Configure the
+router itself with a 15-minute idle unload (or your preferred value). Runtime
+settings and the local token are stored under the git-ignored `runtime/`
+directory.
+
 ### 4. Connect Claude Code CLI (terminal)
 
 For one PowerShell session:
@@ -200,6 +227,8 @@ value.
   gateway is active.
 - The bridge exposes localhost only by default. Do not bind it to the LAN or
   Internet without real authentication and firewall rules.
+- The background lifecycle scripts require an ownership-aware router. A raw
+  `llama-server` endpoint alone cannot safely swap or unload itself.
 
 ## Documentation
 

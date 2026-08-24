@@ -75,14 +75,32 @@ strict one-word probe.
 
 ## Claude closes but VRAM stays allocated
 
-The bridge is stateless and does not own the inference process. Use the
-foreground launcher and close it, or add a lifecycle supervisor/router with:
+For the foreground-only setup, close `llama-server`. For automatic lifecycle
+management, install the included headless supervisor:
+
+```powershell
+.\scripts\install-background-gateway.ps1 -StartNow
+```
+
+The supervisor requires an ownership-aware router with:
 
 - an explicit owner ID;
 - idle request draining;
 - verified process/PID ownership;
 - unload on the client quit event;
 - a timeout fallback.
+
+Verify the chain instead of trusting an accepted response:
+
+1. `GET http://127.0.0.1:8094/health` reports the bridge and router.
+2. Close Claude Code Desktop.
+3. Confirm the router reports `active_target: null`, `active_owner: null` and
+   `active_requests: 0`.
+4. Confirm no model backend remains in VRAM.
+
+If a PowerShell window appears at logon, the task was registered to execute
+PowerShell directly. Re-run the installer so its action is `wscript.exe` and
+`scripts/run-supervisor-hidden.vbs`.
 
 Never kill whatever happens to own a port without verifying its identity.
 

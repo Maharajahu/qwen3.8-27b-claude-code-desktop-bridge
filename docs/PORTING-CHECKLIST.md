@@ -60,6 +60,8 @@
 - [ ] Run past one compaction boundary and resume automatically.
 - [ ] Close the client and verify the chosen lifecycle policy unloads the model.
 - [ ] Test model swap ownership; a test must restore the original owner.
+- [ ] Confirm the background task uses `wscript.exe` and opens no terminal.
+- [ ] Confirm idle timeout never unloads while `active_requests > 0`.
 
 ## Benchmark integrity
 

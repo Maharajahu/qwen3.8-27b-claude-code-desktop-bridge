@@ -142,10 +142,17 @@ test('dynamic context rejects a vision prompt that only fits the text window', (
 
 test('HTTP bridge supports discovery, auth, native thinking SSE, and tool calls', async () => {
   const seen = []
+  const controls = []
   const mock = http.createServer(async (request, response) => {
     if (request.url === '/health') {
       response.writeHead(200, { 'content-type': 'application/json' })
       response.end(JSON.stringify({ status: 'ok' }))
+      return
+    }
+    if (request.url === '/control/select' || request.url === '/control/unload') {
+      controls.push({ url: request.url, body: await jsonBody(request) })
+      response.writeHead(202, { 'content-type': 'application/json' })
+      response.end(JSON.stringify({ status: 'queued' }))
       return
     }
     if (request.url !== '/v1/chat/completions') {
@@ -183,6 +190,7 @@ test('HTTP bridge supports discovery, auth, native thinking SSE, and tool calls'
   const gateway = createGatewayServer({
     catalog,
     upstreamBaseURL: `http://127.0.0.1:${mockPort}/v1`,
+    routerControlURL: `http://127.0.0.1:${mockPort}/control`,
     token: 'test-token',
     logger: () => {},
   })
@@ -200,6 +208,20 @@ test('HTTP bridge supports discovery, auth, native thinking SSE, and tool calls'
     const models = await fetch(`${base}/v1/models?limit=1000`, { headers }).then(r => r.json())
     assert.equal(models.data[0].id, model.id)
     assert.equal(models.data[0].display_name, model.display_name)
+
+    const selected = await fetch(`${base}/control/select`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ model: model.id, mode: 'vision' }),
+    })
+    assert.equal(selected.status, 202)
+
+    const unloaded = await fetch(`${base}/control/unload`, {
+      method: 'POST',
+      headers,
+      body: '{}',
+    })
+    assert.equal(unloaded.status, 202)
 
     const stream = await fetch(`${base}/v1/messages?beta=true`, {
       method: 'POST',
@@ -236,6 +258,16 @@ test('HTTP bridge supports discovery, auth, native thinking SSE, and tool calls'
     assert.equal(tools.content[0].name, 'Read')
     assert.deepEqual(tools.content[0].input, { path: 'README.md' })
     assert.equal(seen.length, 2)
+    assert.deepEqual(controls, [
+      {
+        url: '/control/select',
+        body: { model: model.upstream_model, mode: 'vision', owner: 'claude-desktop' },
+      },
+      {
+        url: '/control/unload',
+        body: { owner: 'claude-desktop' },
+      },
+    ])
   } finally {
     await close(gateway)
     await close(mock)

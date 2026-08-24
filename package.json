@@ -1,6 +1,6 @@
 {
   "name": "qwen3.8-claude-code-bridge",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "type": "module",
   "description": "Run local Qwen3.8-27B in Claude Code Desktop or Claude Code CLI through an Anthropic Messages bridge.",

@@ -629,6 +629,8 @@ function requestAuthorized(request, token) {
 export function createGatewayServer({
   catalog,
   upstreamBaseURL = catalog.upstream_base_url,
+  routerControlURL = '',
+  routerOwner = 'claude-desktop',
   token = '',
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
   logger = message => process.stdout.write(`${new Date().toISOString()} ${message}\n`),
@@ -636,6 +638,29 @@ export function createGatewayServer({
   if (!catalog?.models?.length) throw new Error('The catalog has no models')
   const models = makeModelMap(catalog)
   const upstreamRoot = `${upstreamBaseURL.replace(/\/$/, '')}/`
+  const controlRoot = routerControlURL
+    ? `${routerControlURL.replace(/\/$/, '')}/`
+    : ''
+
+  async function routerControl(action, value = {}) {
+    if (!controlRoot) throw new Error('Router control is not configured')
+    const upstream = await fetch(new URL(action, controlRoot), {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-local-client': routerOwner,
+      },
+      body: JSON.stringify({ ...value, owner: routerOwner }),
+      signal: AbortSignal.timeout(10000),
+    })
+    const text = await upstream.text()
+    let payload
+    try { payload = text ? JSON.parse(text) : {} } catch { payload = { detail: text } }
+    if (!upstream.ok) {
+      throw new Error(`Model router control returned HTTP ${upstream.status}: ${text}`)
+    }
+    return { status: upstream.status, payload }
+  }
 
   async function upstreamHealth() {
     try {
@@ -781,6 +806,28 @@ export function createGatewayServer({
         })
         return
       }
+      if (request.method === 'POST' && url.pathname === '/control/select') {
+        const payload = JSON.parse((await readBody(request, maxBodyBytes)).toString('utf8'))
+        const model = models.get(payload.model)
+        if (!model) {
+          anthropicError(response, 404, `Unknown local model '${payload.model}'`, 'not_found_error')
+          return
+        }
+        const result = await routerControl('select', {
+          model: model.upstream_model,
+          mode: payload.mode,
+        })
+        writeJson(response, result.status, {
+          ...result.payload,
+          requested_model: payload.model,
+        })
+        return
+      }
+      if (request.method === 'POST' && url.pathname === '/control/unload') {
+        const result = await routerControl('unload')
+        writeJson(response, result.status, result.payload)
+        return
+      }
       if (request.method === 'POST' && url.pathname === '/v1/messages/count_tokens') {
         const payload = JSON.parse((await readBody(request, maxBodyBytes)).toString('utf8'))
         writeJson(response, 200, { input_tokens: estimateInputTokens(payload) })
@@ -823,6 +870,8 @@ if (isMain) {
   const server = createGatewayServer({
     catalog,
     upstreamBaseURL: process.env.QWEN_CLAUDE_UPSTREAM ?? catalog.upstream_base_url,
+    routerControlURL: process.env.QWEN_CLAUDE_ROUTER_CONTROL ?? '',
+    routerOwner: process.env.QWEN_CLAUDE_ROUTER_OWNER ?? 'claude-desktop',
     token: process.env.QWEN_CLAUDE_TOKEN ?? '',
   })
   server.keepAliveTimeout = 5 * 60 * 1000

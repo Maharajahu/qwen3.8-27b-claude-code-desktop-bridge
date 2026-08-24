@@ -88,6 +88,23 @@ that genuinely switches between the two limits needs either:
 - an ownership-aware router that drains requests, stops the old server, starts
   the appropriate text/vision profile, then forwards the request.
 
+## Desktop lifecycle
+
+The optional Windows supervisor keeps only the bridge alive in the background.
+It does not preload model weights. Actual inference requests pass a stable
+`claude-desktop` owner ID to the router, which performs on-demand load and safe
+swap after active requests drain.
+
+The supervisor watches the Claude Code Desktop process and visible window. On
+client exit or window close it calls the bridge's authenticated
+`POST /control/unload` endpoint. The bridge forwards that operation to the
+configured router with the same owner ID. An independent router idle timeout is
+the fallback for crashes, missed close events, or switching back to a hosted
+model while Claude remains open.
+
+The scheduled task launches through `wscript.exe`, which keeps the supervisor
+headless even when Windows Terminal is configured as the default console host.
+
 ## Security boundary
 
 The default host is `127.0.0.1`. `QWEN_CLAUDE_TOKEN` enables a simple bearer or
