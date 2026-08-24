@@ -11,8 +11,8 @@ are documented below.
 > **Validated hardware:** NVIDIA GeForce RTX 5090 32 GB<br>
 > **Validated model:** Qwen3.8-27B (community Q6 GGUF, with the matching vision projector)
 
-The BLACKFURY profiles, context limits, MTP settings and benchmark results in
-this repository were measured with the 27B model on a single RTX 5090. They
+The performance profiles, context limits, MTP settings and benchmark results
+in this repository were measured with the 27B model on a single RTX 5090. They
 should not be treated as universal results for other GPUs or Qwen3.8 sizes.
 
 The bridge converts Claude Code's Anthropic-format requests into an
@@ -207,7 +207,7 @@ value.
 - [Same Qwen model in Hermes vs Claude Code](docs/HERMES-VS-CLAUDE-CODE.md)
 - [Complete porting checklist](docs/PORTING-CHECKLIST.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
-- [BLACKFURY Qwen benchmark audit](docs/BLACKFURY-QWEN-AUDIT.md)
+- [Qwen3.8-27B RTX 5090 benchmark audit](docs/QWEN3.8-27B-RTX5090-BENCHMARK-AUDIT.md)
 - [Qwen3.8 vs Ornith 1.5 R benchmark comparison](docs/ORNITH-COMPARISON.md)
 
 ## License and model terms
