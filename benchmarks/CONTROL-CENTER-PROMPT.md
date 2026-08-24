@@ -1,4 +1,4 @@
-# BLACKFURY Model Control Center benchmark prompt
+# Local Model Control Center benchmark prompt
 
 Use this prompt unchanged for every candidate model. Give every run a fresh
 isolated folder and identical harness, context, permissions, tools and
@@ -7,7 +7,7 @@ reasoning effort.
 ```text
 In folderul tau creaza un folder cu TEST CLAUDE iar acolo vei construi asta
 
-Build a polished local web application called “BLACKFURY Model Control Center” in a new isolated folder under D:\unsloth test.
+Build a polished local web application called “Local Model Control Center” in a new isolated folder.
 
 It should automatically discover my existing local-AI services and display, live:
 
