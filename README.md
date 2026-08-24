@@ -1,7 +1,12 @@
-# Qwen3.8 ↔ Claude Code Bridge
+# Qwen3.8-27B for Claude Code Desktop
 
-Run Qwen3.8 behind the Claude Code harness through a small, dependency-free
-Anthropic Messages API adapter.
+Run Qwen3.8-27B locally inside the **Claude Code Desktop client** with native
+reasoning, vision, tools and streaming through a small, dependency-free
+Anthropic Messages API bridge.
+
+The same bridge also supports the separate **Claude Code CLI** terminal client.
+The Desktop client and CLI use different connection settings; both setup paths
+are documented below.
 
 > **Validated hardware:** NVIDIA GeForce RTX 5090 32 GB<br>
 > **Validated model:** Qwen3.8-27B (community Q6 GGUF, with the matching vision projector)
@@ -37,7 +42,7 @@ modified Claude client.
 
 ```mermaid
 flowchart LR
-    A[Claude Code or Claude Desktop] -->|Anthropic Messages + SSE| B[Qwen Claude Code Bridge]
+    A[Claude Code Desktop or Claude Code CLI] -->|Anthropic Messages + SSE| B[Qwen Claude Code Bridge]
     B -->|OpenAI chat/completions| C[llama-server]
     C -->|GGUF + optional mmproj| D[Qwen3.8 on GPU]
     B -->|thinking / text / tools / usage| A
@@ -56,7 +61,7 @@ and [gateway protocol reference](https://code.claude.com/docs/en/llm-gateway-pro
 - a Qwen3.8 GGUF
 - the matching `mmproj` GGUF for vision
 - enough GPU memory for the model, KV cache, compute buffers and projector
-- Claude Code, or Claude Desktop with Third-Party Inference enabled
+- Claude Code Desktop with Third-Party Inference enabled, or Claude Code CLI
 
 The official Qwen3.8 model card describes a native 262,144-token context,
 vision/video support, MTP heads, and `low`/`medium`/`xhigh` reasoning:
@@ -111,7 +116,7 @@ Default endpoints:
 - `llama-server`: `http://127.0.0.1:8093/v1`
 - bridge: `http://127.0.0.1:8094`
 
-### 4. Connect Claude Code CLI
+### 4. Connect Claude Code CLI (terminal)
 
 For one PowerShell session:
 
@@ -130,7 +135,7 @@ project settings file.
 Run `/status` to confirm the base URL, then `/model` to select
 `LOCAL · Qwen3.8 27B · 200K/128K`.
 
-### 5. Connect Claude Desktop
+### 5. Connect Claude Code Desktop (desktop client)
 
 Anthropic's supported desktop path is:
 
@@ -207,7 +212,9 @@ value.
 
 ## License and model terms
 
-Bridge code is MIT licensed. Qwen3.8's official model repository currently
-declares Apache-2.0; a community GGUF or fine-tune may use different terms.
+Bridge code is licensed under Apache License 2.0. Qwen3.8's official model
+repository currently declares Apache-2.0; a community GGUF or fine-tune may
+use different terms.
 Verify the license of the exact weights you distribute. Model weights are not
-covered by this repository's MIT license.
+covered by this repository's Apache-2.0 license.
+
