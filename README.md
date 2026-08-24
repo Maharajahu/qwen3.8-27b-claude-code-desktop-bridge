@@ -3,6 +3,13 @@
 Run Qwen3.8 behind the Claude Code harness through a small, dependency-free
 Anthropic Messages API adapter.
 
+> **Validated hardware:** NVIDIA GeForce RTX 5090 32 GB<br>
+> **Validated model:** Qwen3.8-27B (community Q6 GGUF, with the matching vision projector)
+
+The BLACKFURY profiles, context limits, MTP settings and benchmark results in
+this repository were measured with the 27B model on a single RTX 5090. They
+should not be treated as universal results for other GPUs or Qwen3.8 sizes.
+
 The bridge converts Claude Code's Anthropic-format requests into an
 OpenAI-compatible request for `llama-server`, then converts text, native Qwen
 reasoning, tool calls, images and streamed events back into the format Claude
@@ -204,4 +211,3 @@ Bridge code is MIT licensed. Qwen3.8's official model repository currently
 declares Apache-2.0; a community GGUF or fine-tune may use different terms.
 Verify the license of the exact weights you distribute. Model weights are not
 covered by this repository's MIT license.
-

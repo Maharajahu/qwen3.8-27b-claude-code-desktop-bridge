@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "upstream_base_url": "http://127.0.0.1:8093/v1",
+  "models": [
+    {
+      "id": "blackfury.anthropic.qwen3.8-unsloth-q6",
+      "display_name": "BLACKFURY · Qwen3.8 Unsloth Q6 · 200K/128K",
+      "upstream_model": "qwen38-unsloth-ud-q6kxl",
+      "supports_vision": true,
+      "context_window": 200000,
+      "text_context_window": 200000,
+      "vision_context_window": 131072,
+      "context_reserve_tokens": 1024,
+      "max_output_tokens": 65536,
+      "reasoning_effort_mode": "qwen-xhigh",
+      "sampling": {
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "min_p": 0.0,
+        "presence_penalty": 0.0,
+        "repeat_penalty": 1.0
+      }
+    }
+  ]
+}
+
