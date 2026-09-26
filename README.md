@@ -1,5 +1,10 @@
 # Qwen3.8-27B for Claude Code Desktop
 
+<p align="center">
+  <a href="https://x.com/ToolBraidComp"><img src="https://img.shields.io/badge/Follow-%40ToolBraidComp-111111?logo=x&amp;logoColor=white" alt="Follow @ToolBraidComp on X"></a>
+  <a href="https://buymeacoffee.com/dumitrescup"><img src="https://img.shields.io/badge/Buy_me_a_coffee-FFDD00?logo=buymeacoffee&amp;logoColor=000000" alt="Buy me a coffee — optional support"></a>
+</p>
+
 Run Qwen3.8-27B locally inside the **Claude Code Desktop client** with native
 reasoning, vision, tools and streaming through a small, dependency-free
 Anthropic Messages API bridge.
